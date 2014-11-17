@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[Level fillWithRebuses]:Level.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[HelloWorldLayer init]:HelloWorldLayer.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[CCFileUtils fullPathForFilenameIgnoringResolutions:]:CCFileUtils.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[Rebus draw]:Rebus.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "blur_">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
