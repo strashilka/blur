@@ -86,7 +86,7 @@
         [self createBackground];
         [self createLevels];
         
-        self.isTouchEnabled = YES;
+        self.touchEnabled = YES;
         
 
         
@@ -98,17 +98,18 @@
 	return self;
 }
 
--(void)completionCallback:(CCTexture2D *)texture
+-(void)completionCallback:(NSString *)fileName
 {
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentsDirectory = [paths objectAtIndex:0];
-//    NSString * fullFileName = [NSString stringWithFormat:@"%@/%@", documentsDirectory, fileName];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString * fullFileName = [NSString stringWithFormat:@"%@/%@", documentsDirectory, fileName];
     
     CGSize screenSize = [CCDirector sharedDirector].winSize;
-    CCSprite *sprite = [CCSprite spriteWithTexture:texture];
+    CCSprite *sprite = [CCSprite spriteWithFile:fullFileName];
     sprite.color = ccGRAY;
     [window addChild:sprite z:-1];
     sprite.position = CGPointMake(screenSize.width * 0.5, screenSize.height * 0.5);
+    [_scroll getChildByTag:[self currentLevelNumber]].visible = NO;
 }
 
 -(void)createBackground
@@ -194,6 +195,9 @@
 {
     CGRect bb = _plus.boundingBox;
     bb.origin = [_plus.parent convertToWorldSpace:_plus.boundingBox.origin];
+    float increse_size = 20;
+    bb.origin = ccpSub(bb.origin, ccp(increse_size,increse_size));
+    bb.size = CGSizeMake(bb.size.width + increse_size * 2, bb.size.height + increse_size * 2);
     BOOL result = CGRectContainsPoint(bb, location);
     NSLog([NSString stringWithFormat:@"isPlusInTouchPosition %@", (result ? @"YES" : @"NO")]);
     return result;
@@ -269,8 +273,6 @@
     }
     isWindowVisible = YES;
     NSString *fileName = [NSString stringWithFormat:@"blur_%i.png", (int)[[NSDate date] timeIntervalSince1970]];
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
     
     CCRenderTexture *rt = [CCRenderTexture renderTextureWithWidth:[CCDirector sharedDirector].winSize.width
                                                            height:[CCDirector sharedDirector].winSize.height
@@ -297,9 +299,9 @@
 //    else
 //    {
         [TextureBlur create:rt.sprite.texture radius:30 fileName:fileName callback:
-         ^(CCTexture2D *texture)
+         ^(NSString *file_name)
 		 {
-			 [self completionCallback:texture];
+			 [self completionCallback:file_name];
 		 }step:1];
 //    }
     
@@ -313,6 +315,7 @@
 
 -(void)hideWindow
 {
+        [_scroll getChildByTag:[self currentLevelNumber]].visible = YES;
     isWindowVisible = NO;
     
     window.visible = NO;

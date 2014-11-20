@@ -10,7 +10,7 @@
 
 @interface TextureBlur : NSObject
 
-+(void)create:(CCTexture2D *)target radius:(int) radius fileName:(NSString *)fileName callback:(void (^)(CCTexture2D *text))callback step:(int) step;
++(void)create:(CCTexture2D *)target radius:(int) radius fileName:(NSString *)fileName callback:(void (^)(NSString *file_name_))callback step:(int) step;
 
 +(void)calculateGaussianWeightsForPoints:(int)points weight:(CGFloat *)weights;
 +(CCGLProgram *)getBlurShader:(CGSize)pixelSize direction:(CGPoint)direction radius:(int)radius weight:(GLfloat *)weights;

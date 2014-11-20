@@ -12,6 +12,7 @@
 #import "CCTexture2D.h"
 #import "ccShaders.h"
 #import "CCRenderTexture.h"
+#import "CCDirector.h"
 
 @implementation TextureBlur
 
@@ -66,7 +67,7 @@ static const int maxRadius = 64;
     return blur;
 }
 
-+(void)create:(CCTexture2D *)target radius:(int) radius fileName:(NSString *)fileName callback:(void (^)(CCTexture2D *text))callback step:(int) step
++(void)create:(CCTexture2D *)target radius:(int) radius fileName:(NSString *)fileName callback:(void (^)(NSString *file_name_))callback step:(int) step
 {
     NSAssert(target != nil, @"Null pointer passed as a texture to blur");
     NSAssert(radius <= maxRadius, @"Blur radius is too big");
@@ -75,11 +76,12 @@ static const int maxRadius = 64;
     NSAssert(step <= radius/2 + 1 , @"Step is too big");
     NSAssert((step > 0), @"Step is too small");
     
-    CGSize textureSize = target.contentSizeInPixels;
+    CGSize textureSize = target.contentSize;
     CGSize pixelSize = CGSizeMake((float)(step)/textureSize.width, (float)(step)/textureSize.height);
     int radiusWithStep = radius/step;
     
     GLfloat	weights[64];
+    
     [self calculateGaussianWeightsForPoints:radiusWithStep weight:weights];
     
     CCSprite* stepX = [[CCSprite alloc] initWithTexture:target];
@@ -104,11 +106,18 @@ static const int maxRadius = 64;
     [stepY visit];
     [rtY end];
     
-//    [rtY saveToFile:fileName format:kCCImageFormatPNG];
+    [rtY saveToFile:fileName format:kCCImageFormatPNG];
+    callback(fileName);
+//	CGImageRef imageRef = [rtY newCGImage];
+//    CCTexture2D *tex = [[CCTexture2D alloc] initWithCGImage:imageRef resolutionType:kCCResolutionUnknown ];
+//
+//    UIImage* image	= [[UIImage alloc] initWithCGImage:imageRef scale:CC_CONTENT_SCALE_FACTOR() orientation:UIImageOrientationUp];
+//	NSData *imageData = UIImagePNGRepresentation( image );
+//	[image release];
+//    
+//    CCSprite *sprite = [CCSprite spriteWithCGImage:image.CGImage key:@"BB"];
     
-	CGImageRef imageRef = [rtY newCGImage];
-    CCTexture2D *tex = [[CCTexture2D alloc] initWithCGImage:imageRef resolutionType:kCCResolutionUnknown ];
-    callback([tex autorelease]);
+//    callback([sprite.texture autorelease]);
 }
 
 
